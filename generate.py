@@ -4,48 +4,29 @@ from datetime import datetime, timedelta
 
 
 datos = [['numeroControl', 'codigoGeneracion', 'fecEmi', 'horEmi', 'codigoGeneracionRecepcion', 'version', 'tipoDTE']]
-dict_DTE = { '1' : { 'tipo': 'Factura', 'tipoDTE' : 1, 'version': 1 } }
+dict_DTE = { 
+            1 : { 'no': 1, 'tipo': 'Factura', 'dte' : 1, 'version': 1 },
+            3 : { 'no': 3, 'tipo': 'Comprobante Credito Fiscal', 'dte' : 3, 'version': 3 },
+            5 : { 'no': 5, 'tipo': 'Nota de Credito', 'dte' : 5, 'version': 3 },
+            6 : { 'no': 6, 'tipo': 'Nota de Debito', 'dte' : 6, 'version': 3 },
+            11 : { 'no': 11, 'tipo': 'Factura de Exportación', 'dte' :11, 'version': 1 },
+            14 : { 'no': 14, 'tipo': 'Factura de Sujeto Excluido', 'dte' : 14, 'version': 1 },
+            }
 filename_csv = 'datos.csv'
 id_minimo = 0
 id_maximo = 0
 control  = 0
 
+ 
+def menu(arreglo):
+    for item in arreglo:
+        print("%d %s" %(arreglo[item]['no'], arreglo[item]['tipo']))
 
-def menu():
-    print('01 Factura')
-    print('03 Comprobante Credito Fiscal')
-    print('05 Nota de Credito')
-    print('06 Nota de Debito')
-    print('11 Factura de Exportación')
-    print('14 Factura de Sujeto Excluido')
-
+    
 
 def tipo_DTE(opcion):
-    
-    
-    if opcion == 1:
-        version = 1
-        tipoDTE = 1
-    elif opcion == 3:
-        version = 3
-        tipoDTE = 3
-    elif opcion == 5:
-        version = 3
-        tipoDTE = 5
-    elif opcion == 6:
-        version = 3
-        tipoDTE = 6
-    elif opcion == 11:
-        version = 1
-        tipoDTE = 11
-    elif opcion == 6:
-        version = 1
-        tipoDTE = 14
-    else:
-        print("Ingrese un parametro correcto")
-        exit()
-  
-    return version, tipoDTE
+    dte = dict_DTE[opcion]
+    return dte['version'], dte['dte']
 
 
 def fecha_actual():
@@ -78,22 +59,25 @@ def guardar_csv(archivo_csv):
 
 
 
-menu()
+menu(dict_DTE)
 
 opcion = int(input("Ingrese la opción: "))
 control = int(input("Ingrese el número de control: "))
-id_minimo = int(input("Limite mínimo del loop: "))
 id_maximo  = int(input("Limite máximo del loop: "))
 
 
-
 version, tipoDTE = tipo_DTE(opcion)
+if len(str(tipoDTE)) > 2:
+  tipoDTE = str(tipoDTE)
+else:
+  tipoDTE = "0" + str(tipoDTE)
+
 numero_control_parcial = "DTE-"+tipoDTE+"-20000000-000000000000"
 fecha = fecha_actual()
 hora = hora_actual_mas_cinco()
 
 
-for item in range(id_minimo, id_maximo):
+for item in range(1, id_maximo):
     numero_control = ""
     uuid_generado = generar_uuid().upper()
     uuid_generado_recepcion = generar_uuid().upper()
